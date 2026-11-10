@@ -62,6 +62,50 @@ void main() {
 
     expect(Provider.of<ThemeProvider>(drawerContext, listen: false).isDarkMode, isTrue);
   });
+
+  testWidgets('logout requires confirmation', (tester) async {
+    var didLogout = false;
+
+    await tester.pumpWidget(
+      ChangeNotifierProvider(
+        create: (_) => ThemeProvider(),
+        child: MaterialApp(
+          home: Scaffold(
+            appBar: AppBar(title: const Text('Test')),
+            drawer: AppDrawer(
+              currentIndex: 0,
+              onDestinationSelected: _noop,
+              onLogout: () => didLogout = true,
+            ),
+            body: const SizedBox.shrink(),
+          ),
+        ),
+      ),
+    );
+
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -300));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Logout'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Are you sure you want to log out?'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(didLogout, isFalse);
+
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pumpAndSettle();
+    await tester.drag(find.byType(ListView), const Offset(0, -300));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Logout'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Log out'));
+    await tester.pumpAndSettle();
+
+    expect(didLogout, isTrue);
+  });
 }
 
 void _noop(int _) {}
