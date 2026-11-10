@@ -53,7 +53,7 @@ class AppDrawer extends StatelessWidget {
             secondary: Icon(Icons.dark_mode, color: accentColor),
             title: const Text('Dark Mode'),
             value: isDark,
-            activeColor: const Color(0xFF8FB8E8),
+            activeThumbColor: const Color(0xFF8FB8E8),
             activeTrackColor: const Color(0xFF163A5F),
             onChanged: (_) => themeProvider.toggleTheme(),
           ),
@@ -79,7 +79,7 @@ class AppDrawer extends StatelessWidget {
       leading: Icon(icon, color: isSelected ? accentColor : null),
       title: Text(title),
       selected: isSelected,
-      selectedTileColor: accentColor.withOpacity(0.16),
+      selectedTileColor: accentColor.withValues(alpha: 0.16),
       onTap: () {
         Navigator.pop(context);
         if (!isSelected) {
